@@ -3394,13 +3394,14 @@ void btm_io_capabilities_req (UINT8 *p)
 
     BTM_TRACE_EVENT("%s: State: %s", __FUNCTION__, btm_pair_state_descr(btm_cb.pairing_state));
 
-
+    #if BLE_INCLUDED == TRUE
     if (btm_sec_is_a_bonded_dev(evt_data.bd_addr)) {
         BTM_TRACE_WARNING(
             "%s: Incoming bond request, but device is already bonded (removing)",
             __func__);
         bta_dm_process_remove_device(evt_data.bd_addr);
     }
+    #endif
 
     p_dev_rec = btm_find_or_alloc_dev (evt_data.bd_addr);
 
@@ -4912,6 +4913,7 @@ void btm_sec_disconnected (UINT16 handle, UINT8 reason)
                 | BTM_SEC_ROLE_SWITCHED | BTM_SEC_16_DIGIT_PIN_AUTHED);
     }
 
+    #if BLE_INCLUDED == TRUE
     /* Some devices hardcode sample LTK value from spec, instead of generating
      * one. Treat such devices as insecure, and remove such bonds on
      * disconnection.
@@ -4925,6 +4927,7 @@ void btm_sec_disconnected (UINT16 handle, UINT8 reason)
       bta_dm_remove_device(&p_data);
       return;
     }
+    #endif
 
 #if BLE_INCLUDED == TRUE && SMP_INCLUDED == TRUE
     if (p_dev_rec->sec_state == BTM_SEC_STATE_DISCONNECTING_BOTH)

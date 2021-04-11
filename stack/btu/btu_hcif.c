@@ -693,8 +693,11 @@ static void btu_hcif_encryption_change_evt (UINT8 *p)
     STREAM_TO_UINT16 (handle, p);
     STREAM_TO_UINT8  (encr_enable, p);
 
-    if (status != HCI_SUCCESS || encr_enable == 0 ||
-        BTM_IsBleConnection(handle)) {
+    if (status != HCI_SUCCESS || encr_enable == 0
+#if BLE_INCLUDED == TRUE
+    || BTM_IsBleConnection(handle)
+#endif
+    ) {
         btm_acl_encrypt_change (handle, status, encr_enable);
         btm_sec_encrypt_change (handle, status, encr_enable);
     } else {
@@ -1725,7 +1728,11 @@ static void btu_hcif_encryption_key_refresh_cmpl_evt (UINT8 *p)
 
     if (status == HCI_SUCCESS) enc_enable = 1;
 
-    if (status != HCI_SUCCESS || BTM_IsBleConnection(handle)) {
+    if (status != HCI_SUCCESS
+#if BLE_INCLUDED == TRUE
+    || BTM_IsBleConnection(handle)
+#endif
+    ) {
         btm_sec_encrypt_change (handle, status, enc_enable);
     } else  {
         read_key_send_from_key_refresh = true;

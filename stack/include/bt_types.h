@@ -797,6 +797,7 @@ static inline void bdsetany(BD_ADDR a)
     bdcpy(a, bd_addr_any);
 }
 
+#if (BLE_INCLUDED == TRUE)
 static inline bool is_sample_ltk(const BT_OCTET16 ltk) {
   /* Sample LTK from BT Spec 5.1 | Vol 6, Part C 1
    * 0x4C68384139F574D836BCF34E9DFB01BF */
@@ -804,5 +805,6 @@ static inline bool is_sample_ltk(const BT_OCTET16 ltk) {
                                 0xd8, 0x74, 0xf5, 0x39, 0x41, 0x38, 0x68, 0x4c};
   return memcmp(ltk, SAMPLE_LTK, BT_OCTET16_LEN) == 0;
 }
+#endif
 
 #endif

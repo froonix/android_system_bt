@@ -842,6 +842,7 @@ bt_status_t btif_storage_remove_bonded_device(bt_bdaddr_t *remote_bd_addr)
 
 }
 
+#if (BLE_INCLUDED == TRUE)
 /* Some devices hardcode sample LTK value from spec, instead of generating one.
  * Treat such devices as insecure, and remove such bonds when bluetooth restarts.
  * Removing them after disconnection is handled separately.
@@ -882,6 +883,7 @@ static void remove_devices_with_sample_ltk() {
 
     list_free(bad_ltk);
 }
+#endif
 
 /*******************************************************************************
 **
@@ -930,7 +932,9 @@ bt_status_t btif_storage_load_bonded_devices(void)
     bt_uuid_t local_uuids[BT_MAX_NUM_UUIDS];
     bt_uuid_t remote_uuids[BT_MAX_NUM_UUIDS];
 
+    #if (BLE_INCLUDED == TRUE)
     remove_devices_with_sample_ltk();
+    #endif
 
     btif_in_fetch_bonded_devices(&bonded_devices, 1);
 
